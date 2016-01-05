@@ -5,9 +5,7 @@
 
 ### Overview
 
-Inflow is a library for using InfluxDB with Java.
-
-The influxdb-inflow library was created in the spirit of the Python influxdb client, in an effort to maintain a common structure between various programming languages talking to InfluxDB.
+Inflow is a library for using InfluxDB with Java projects that need to talk HTTP or UDP. It takes code and architecture from both https://github.com/influxdata/influxdb-php and https://github.com/influxdata/influxdb-java projects. The goals were Java code query builders and results DTO, multiple connection management, and UDP transport support.
 
 ### Maven
 TODO: Where to publish this library for general consumption?
@@ -30,6 +28,6 @@ Until I sort that out, /mvn install/ this project locally and then you can use i
 
 ## Changelog
 
-###0.2.0
+### 0.1.0
 * Initial release
 * InfluxDB 0.9.4 support
