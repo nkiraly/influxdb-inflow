@@ -43,7 +43,7 @@ public class Client {
 
   protected DriverInterface driver;
 
-  public String lastQuery;
+  protected static String lastQuery;
 
   public Client(String host, int port, String username, String password, boolean ssl, boolean verifySSL, int timeout) {
     this.host = host;
@@ -136,7 +136,7 @@ public class Client {
 
     QueryDriverInterface queryDriver = this.getQueryDriver();
 
-    this.lastQuery = query;
+    Client.lastQuery = query;
 
     Query queryObject = new Query(query, databaseName);
 
@@ -146,24 +146,24 @@ public class Client {
   /**
    * List all the databases
    */
-  public List<List<Object>> listDatabases() throws InflowException {
+  public QueryResult.Series listDatabases() throws InflowException {
     QueryResult queryResult = this.query(null, "SHOW DATABASES");
     QueryResult.Result result = queryResult.getResults().get(0);
     QueryResult.Series series = result.getSeries().get(0);
-    List<List<Object>> values = series.getValues();
-    return values;
+    return series;
+    // callers can use series.getValuesAsStringArray();
   }
 
   /**
    * List all the users
    *
    */
-  public List<List<Object>> listUsers() throws InflowException {
+  public QueryResult.Series listUsers() throws InflowException {
     QueryResult queryResult = this.query(null, "SHOW USERS");
     QueryResult.Result result = queryResult.getResults().get(0);
     QueryResult.Series series = result.getSeries().get(0);
-    List<List<Object>> values = series.getValues();
-    return values;
+    return series;
+    // calle1s can use series.getValuesAsStringArray();
   }
 
   /**
@@ -254,12 +254,12 @@ public class Client {
     return this.host;
   }
 
-  /**
-   * Last executed query string
-   *
-   */
-  public String getLastQuery() {
-    return this.lastQuery;
+  public static String setLastQuery(String query) {
+    Client.lastQuery = query;
+    return Client.lastQuery;
+  }
+  public static String getLastQuery() {
+    return Client.lastQuery;
   }
 
 }

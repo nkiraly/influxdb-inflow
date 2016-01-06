@@ -2,15 +2,28 @@ package org.influxdb.inflow;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDB.RetentionPolicy;
+import org.influxdb.TimeUtil;
+import org.influxdb.dto.Point;
+import org.influxdb.dto.QueryResult;
+import org.influxdb.dto.QueryResult.Result;
+import org.influxdb.dto.QueryResult.Series;
 
 public class Database {
 
   protected String name;
   protected Client client;
 
-  public Database(String name, Client client) throws InflowException {
-    if (name == null || name.length() == 0) {
-      throw new InflowException("Database name is zero length");
+  public Database(String name, Client client) {
+    if (name == null) {
+      throw new IllegalArgumentException("Database name is null");
+    }
+    if (name.length() == 0) {
+      throw new IllegalArgumentException("Database name is zero length");
     }
     this.name = name;
     this.client = client;
@@ -41,6 +54,111 @@ public class Database {
 
   public static Database fromURI(String uri) throws InflowException {
     return Database.fromURI(uri, 0);
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public QueryResult query(String query) throws InflowException {
+    return this.client.query(this.name, query);
+  }
+
+  /**
+   * Create this database
+   *
+   * @param retentionPolicy
+   * @param createIfNotExists Only create the database if it does not yet exist
+   */
+  public QueryResult create(RetentionPolicy retentionPolicy, boolean createIfNotExists) throws InflowDatabaseException {
+    QueryResult queryResult = null;
+    try {
+      String query = String.format(
+              "CREATE DATABASE %s%s",
+              (createIfNotExists ? "IF NOT EXISTS " : ""),
+              this.name
+      );
+
+      queryResult = this.query(query);
+
+      if (retentionPolicy != null) {
+        this.createRetentionPolicy(retentionPolicy);
+      }
+    } catch (Exception ex) {
+      throw new InflowDatabaseException("Failed to created database %s" + this.name + "\n" + ex.getMessage(), ex);
+    }
+    return queryResult;
+  }
+
+  public QueryResult create(RetentionPolicy retentionPolicy) throws InflowDatabaseException {
+    return this.create(retentionPolicy, true);
+  }
+
+  public QueryResult create() throws InflowDatabaseException {
+    return this.create(null);
+  }
+
+  /**
+   * Writes points into InfluxDB
+   *
+   * @param points Array of points
+   * @param precision The timestamp precision (defaults to nanoseconds)
+   */
+  public void writePoints(Point[] points, TimeUnit precision) throws InflowException {
+
+    String payload = "";
+    for (Point point : points) {
+      payload += point.lineProtocol();
+    }
+
+    // TODO: get retention polcy and consistency levels passed
+    // or refactor a write() that does not require them and use them as defined in the driver?
+    this.client.driver.write(this.name, new RetentionPolicy("default"), InfluxDB.ConsistencyLevel.ONE, TimeUtil.toTimePrecision(precision));
+  }
+
+  public void writePoints(Point[] points) throws InflowException {
+    this.writePoints(points, TimeUnit.NANOSECONDS);
+  }
+
+  public boolean exists() throws InflowException {
+    Series databaseSeries = this.client.listDatabases();
+    String[] databases = databaseSeries.getValuesAsStringArray();
+    return Arrays.asList(databases).contains(this.name);
+  }
+
+  
+  public QueryResult createRetentionPolicy(RetentionPolicy retentionPolicy) throws InflowException {
+    return this.query(RetentionPolicy.toQueryString("CREATE", retentionPolicy, this.name));
+  }
+
+  public QueryResult alterRetentionPolicy(RetentionPolicy retentionPolicy) throws InflowException {
+    return this.query(RetentionPolicy.toQueryString("ALTER", retentionPolicy, this.name));
+  }
+
+  public Series listRetentionPolicies() throws InflowException {
+    QueryResult queryResult = this.query(String.format("SHOW RETENTION POLICIES ON %s", this.name));
+    List<Result> results = queryResult.getResults();
+    Result result = results.get(0);
+    List<Series> series = result.getSeries();
+    Series serie = series.get(0);
+    return serie;
+    // callers can use series.getValuesAsStringArray();
+  }
+
+  public QueryResult drop() throws InflowException {
+    return this.query(String.format("DROP DATABASE %s", this.name));
+  }
+
+  /**
+   * Retrieve a query builder for this database
+   *
+   */
+  public QueryBuilder getQueryBuilder() {
+    return new QueryBuilder(this);
+  }
+
+  public Client getClient() {
+    return this.client;
   }
 
 }

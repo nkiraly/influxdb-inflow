@@ -202,6 +202,13 @@ public class QueryResult {
       builder.append("]");
       return builder.toString();
     }
+    
+    public String[] getValuesAsStringArray() {
+      List<List<Object>> objectValues = this.values;
+      // TODO: does this give me all List<List<Object>> item values as an array ?
+      String[] stringVals = (String[])objectValues.toArray();
+      return stringVals;
+    }
 
   }
 

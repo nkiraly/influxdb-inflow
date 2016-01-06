@@ -131,12 +131,12 @@ public interface InfluxDB {
       this(name, "1d");
     }
 
-    public String toQueryString(String method, RetentionPolicy retentionPolicy) {
+    public static String toQueryString(String method, RetentionPolicy retentionPolicy, String databaseName) {
       String query = String.format(
               "%s RETENTION POLICY %s ON %s DURATION %s REPLICATION %s",
               method,
               retentionPolicy.name,
-              this.name,
+              databaseName,
               retentionPolicy.duration,
               retentionPolicy.replication
       );
