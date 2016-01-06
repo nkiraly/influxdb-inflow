@@ -35,7 +35,7 @@ public class Admin {
     return this.client.query(null, query);
   }
 
-  public QueryResult showUsers(String username) throws InflowException {
+  public QueryResult showUsers() throws InflowException {
     String query = "SHOW USERS";
     return this.client.query(null, query);
   }
