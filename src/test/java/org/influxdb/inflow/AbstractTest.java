@@ -109,6 +109,12 @@ public abstract class AbstractTest {
   public String getEmptyResult() {
     return this.emptyResult;
   }
+  
+  public QueryResult getEmptyQueryResult() {
+    Gson gson = new Gson();
+    QueryResult eqr = gson.fromJson(this.getEmptyResult(), QueryResult.class);
+    return eqr;
+  }
 
   public Client getClientMock(boolean queryReturnsEmptyResult) throws Exception {
     Client client = Mockito.mock(Client.class);
@@ -125,9 +131,7 @@ public abstract class AbstractTest {
         @Override
         public QueryResult answer(InvocationOnMock invocation) throws Throwable {
           Object[] args = invocation.getArguments();
-          Gson gson = new Gson();
-          QueryResult qr = gson.fromJson(emptyResult, QueryResult.class);
-          return qr;
+          return getEmptyQueryResult();
         }
       });
     }

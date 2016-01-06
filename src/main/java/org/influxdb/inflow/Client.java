@@ -43,6 +43,11 @@ public class Client {
 
   protected DriverInterface driver;
 
+  /**
+   * static member of last run query.
+   * this is for unit testing.
+   * sorry, not sorry.
+   */
   protected static String lastQuery;
 
   public Client(String host, int port, String username, String password, boolean ssl, boolean verifySSL, int timeout) {
