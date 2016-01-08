@@ -16,8 +16,6 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 public abstract class AbstractTest {
 
@@ -129,30 +127,30 @@ public abstract class AbstractTest {
     return eqr;
   }
 
-  public Client getClientMock(boolean queryReturnsEmptyResult) throws Exception {
+  public Client getMockClient() throws Exception {
     Client client = Mockito.mock(Client.class);
     // return mockClient when Client constructor called with TEST_TARGET_HOSTNAME
     PowerMockito.whenNew(Client.class)
             .withArguments(TEST_TARGET_HOSTNAME)
             .thenReturn(client);
+    return client;
+  }
+  
+  public Client getMockClientThatReturnsEmptyQueryResult() throws Exception {
+    Client client = this.getMockClient();
 
-    // if specified to return emptyResult
-    if (queryReturnsEmptyResult) {
-
-      // return resultData QueryResult when calling query
-      Mockito.when(client.query(anyString(), anyString())).thenAnswer(new Answer<QueryResult>() {
-        @Override
-        public QueryResult answer(InvocationOnMock invocation) throws Throwable {
-          Object[] args = invocation.getArguments();
-          return getEmptyQueryResult();
-        }
-      });
-    }
+    // when calling query
+    // with any parameters
+    // return empty result data object
+    Mockito.when(client.query(anyString(), anyString())).thenAnswer(new Answer<QueryResult>() {
+      @Override
+      public QueryResult answer(InvocationOnMock invocation) throws Throwable {
+        Object[] args = invocation.getArguments();
+        return getEmptyQueryResult();
+      }
+    });
 
     return client;
   }
 
-  public Client getClientMock() throws Exception {
-    return this.getClientMock(false);
-  }
 }

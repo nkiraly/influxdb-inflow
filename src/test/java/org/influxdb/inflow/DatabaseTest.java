@@ -144,7 +144,7 @@ public class DatabaseTest extends AbstractTest {
   }
 
   protected Database getTestDatabase(String name) throws Exception, Exception {
-    return new Database(name, this.getClientMock(true));
+    return new Database(name, this.getMockClientThatReturnsEmptyQueryResult());
   }
 
   protected Database getTestDatabase() throws Exception {

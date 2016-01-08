@@ -7,17 +7,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.testng.Assert.assertEquals;
 
 public class ClientTest extends AbstractTest {
 
