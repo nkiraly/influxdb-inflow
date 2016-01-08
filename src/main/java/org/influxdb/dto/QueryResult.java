@@ -2,9 +2,10 @@ package org.influxdb.dto;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * Query Serie result data transfer object
+ * Query Result series data transfer object
  *
  * for Serie details, see https://influxdb.com/docs/v0.9/guides/querying_data.html
  *
@@ -63,6 +64,35 @@ public class QueryResult {
   public void setError(final String error) {
     this.error = error;
   }
+  
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (!(o instanceof QueryResult)) {
+      return false;
+    }
+
+    QueryResult queryResult = (QueryResult) o;
+
+    if (!Objects.equals(this.error, queryResult.error)) {
+      return false;
+    }
+    if (!Objects.equals(this.results, queryResult.results)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 79 * hash + Objects.hashCode(this.results);
+    hash = 79 * hash + Objects.hashCode(this.error);
+    return hash;
+  }
 
   public static class Result {
 
@@ -118,6 +148,35 @@ public class QueryResult {
       builder.append(this.error);
       builder.append("]");
       return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == null) {
+        return false;
+      }
+      if (!(o instanceof Result)) {
+        return false;
+      }
+
+      Result result = (Result) o;
+
+      if (!Objects.equals(this.error, result.error)) {
+        return false;
+      }
+      if (!Objects.equals(this.series, result.series)) {
+        return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hash = 5;
+      hash = 67 * hash + Objects.hashCode(this.series);
+      hash = 67 * hash + Objects.hashCode(this.error);
+      return hash;
     }
 
   }
@@ -208,6 +267,74 @@ public class QueryResult {
       // TODO: does this give me all List<List<Object>> item values as an array ?
       String[] stringVals = (String[])objectValues.toArray();
       return stringVals;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+      if (o == null) {
+        return false;
+      }
+      if (!(o instanceof Series)) {
+        return false;
+      }
+
+      Series series = (Series) o;
+
+      if (!Objects.equals(this.name, series.name)) {
+        return false;
+      }
+      if (!Objects.equals(this.tags, series.tags)) {
+        return false;
+      }
+
+      if (this.tags.size() != series.tags.size()) {
+        return false;
+      }
+      for (String key : this.tags.keySet()) {
+        if (!this.tags.get(key).equals(series.tags.get(key))) {
+          return false;
+        }
+      }
+      
+      // List.equals will return true if values and order the same
+      if (!Objects.equals(this.columns, series.columns)) {
+        return false;
+      }
+      
+      // check values nulls before comparing lists contained
+      if ( this.values == null && series.values != null ) {
+        return false;
+      }
+      else if ( this.values != null && series.values == null ) {
+        return false;
+      }
+      else {
+        // check that specified series (v2) contains all values of this (v1)
+        for ( Object v1 : this.values ) {
+          if ( ! series.values.contains(v1)) {
+            return false;
+          }
+        }
+        // check that this (v1) contains all values of specified series (v2)
+        for ( Object v2 : series.values ) {
+          if ( ! this.values.contains(v2)) {
+            return false;
+          }
+        }
+        // TODO: other List of Lists comparisons ?
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hash = 5;
+      hash = 97 * hash + Objects.hashCode(this.name);
+      hash = 97 * hash + Objects.hashCode(this.tags);
+      hash = 97 * hash + Objects.hashCode(this.columns);
+      hash = 97 * hash + Objects.hashCode(this.values);
+      return hash;
     }
 
   }

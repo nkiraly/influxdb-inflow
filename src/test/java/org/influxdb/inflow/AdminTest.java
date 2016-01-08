@@ -22,8 +22,8 @@ public class AdminTest extends AbstractTest {
     Admin adminObject = this.getAdminObject();
 
     assertEquals(
-            this.getEmptyQueryResult(),
-            adminObject.createUser("test", "test", UserPrivilege.ALL)
+            adminObject.createUser("test", "test", UserPrivilege.ALL),
+            this.getEmptyQueryResult()
     );
   }
 
@@ -32,8 +32,8 @@ public class AdminTest extends AbstractTest {
     Admin adminObject = this.getAdminObject();
 
     assertEquals(
-            this.getEmptyQueryResult(),
-            adminObject.changeUserPassword("test", "test")
+            adminObject.changeUserPassword("test", "test"),
+            this.getEmptyQueryResult()
     );
   }
 
