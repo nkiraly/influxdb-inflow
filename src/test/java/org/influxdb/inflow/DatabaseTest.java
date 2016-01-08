@@ -2,18 +2,18 @@ package org.influxdb.inflow;
 
 import com.google.gson.Gson;
 import java.util.concurrent.TimeUnit;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import org.influxdb.InfluxDB.RetentionPolicy;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.QueryResult;
-import static org.mockito.Matchers.anyString;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.doThrow;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.testng.Assert.assertEquals;
 
 public class DatabaseTest extends AbstractTest {
 
@@ -63,14 +63,12 @@ public class DatabaseTest extends AbstractTest {
     );
 
     this.database.listRetentionPolicies();
-    assertEquals(
-            "SHOW RETENTION POLICIES ON " + this.TEST_ARG_DATABSENAME,
+    assertEquals("SHOW RETENTION POLICIES ON " + this.TEST_TARGET_DATABSENAME,
             Client.lastQuery
     );
 
     this.database.alterRetentionPolicy(this.getTestRetentionPolicy());
-    assertEquals(
-            "ALTER RETENTION POLICY test_retention_policy ON " + this.TEST_ARG_DATABSENAME + " DURATION 1d REPLICATION 1 DEFAULT",
+    assertEquals("ALTER RETENTION POLICY test_retention_policy ON " + this.TEST_TARGET_DATABSENAME + " DURATION 1d REPLICATION 1 DEFAULT",
             Client.lastQuery
     );
   }
@@ -84,24 +82,23 @@ public class DatabaseTest extends AbstractTest {
   public void testCreate() throws InflowDatabaseException, InflowException {
     // test create with retention policy
     this.database.create(this.getTestRetentionPolicy(), true);
-    assertEquals(
-            "CREATE RETENTION POLICY test_retention_policy ON " + this.TEST_ARG_DATABSENAME + " DURATION 1d REPLICATION 1 DEFAULT",
+    assertEquals("CREATE RETENTION POLICY test_retention_policy ON " + this.TEST_TARGET_DATABSENAME + " DURATION 1d REPLICATION 1 DEFAULT",
             Client.lastQuery
     );
 
     // test creating a database without create if not exists
     this.database.create(null, true);
-    assertEquals("CREATE DATABASE IF NOT EXISTS " + this.TEST_ARG_DATABSENAME, Client.lastQuery);
+    assertEquals("CREATE DATABASE IF NOT EXISTS " + this.TEST_TARGET_DATABSENAME, Client.lastQuery);
 
     // test creating a database without create if not exists
     this.database.create(null, false);
-    assertEquals("CREATE DATABASE " + this.TEST_ARG_DATABSENAME, Client.lastQuery);
+    assertEquals("CREATE DATABASE " + this.TEST_TARGET_DATABSENAME, Client.lastQuery);
   }
 
   @Test(expectedExceptions = InflowException.class)
   public void testCreateException() throws InflowException, InflowDatabaseException {
     // test an exception being handled correctly
-    doThrow(new Exception()).when(this.mockClient).query(this.TEST_ARG_DATABSENAME, anyString());
+    doThrow(new Exception()).when(this.mockClient).query(this.TEST_TARGET_DATABSENAME, anyString());
     this.database.create(this.getTestRetentionPolicy(), false);
   }
 

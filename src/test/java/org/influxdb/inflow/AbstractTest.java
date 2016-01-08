@@ -18,20 +18,33 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 public abstract class AbstractTest {
 
   protected Client mockClient;
-  
+
   protected DriverInterface mockDriver;
 
-  protected String TEST_ARG_LOCALHOST = "localhost";
+  /**
+   * these various TEST_TARGET_ variables are compared for consistency in the various tests.
+   *
+   * when testing with your own values:
+   *
+   * if you change a value, change it in all the TEST_TARGET_ entries * to match
+   */
+  protected String TEST_TARGET_HOSTNAME = "localhost";
+
+  protected String TEST_TARGET_DATABSENAME = "testdb";
   
-  protected String TEST_ARG_DATABSENAME = "influxtestdb";
+  protected String TEST_TARGET_USERNAME = "testdb";
+  
+  protected String TEST_TARGET_PASSWORD = "testdb";
+
+  protected String TEST_TARGET_URL = "http://localhost:8086";
+
+  protected String TEST_TARGET_DSN = "https+influxdb://test:test@localhost:8086/";
+
+  protected String TEST_TARGET_DSN_WITH_DB = "https+influxdb://test:test@localhost:8086/testdb";
 
   protected String emptyResult = "{\"results\":[{}]}";
 
@@ -43,9 +56,9 @@ public abstract class AbstractTest {
 
   public void setUp() throws Exception {
     this.mockClient = Mockito.mock(Client.class);
-    // return mockClient when Client constructor called with TEST_ARG_LOCALHOST
+    // return mockClient when Client constructor called with TEST_TARGET_HOSTNAME
     PowerMockito.whenNew(Client.class)
-            .withArguments(TEST_ARG_LOCALHOST)
+            .withArguments(TEST_TARGET_HOSTNAME)
             .thenReturn(this.mockClient);
 
     // load result example json
@@ -56,7 +69,7 @@ public abstract class AbstractTest {
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {
         Object[] args = invocation.getArguments();
-        return "http://localhost:8086";
+        return TEST_TARGET_URL;
       }
     });
 
@@ -86,7 +99,7 @@ public abstract class AbstractTest {
     // specify mockDriver as the driver to use for mockClient
     this.mockClient.setDriver(this.mockDriver);
 
-    this.database = new Database(TEST_ARG_DATABSENAME, this.mockClient);
+    this.database = new Database(TEST_TARGET_DATABSENAME, this.mockClient);
   }
   
   protected String loadResourceFileDataAsString(String resourceFileName) throws IOException {
@@ -118,9 +131,9 @@ public abstract class AbstractTest {
 
   public Client getClientMock(boolean queryReturnsEmptyResult) throws Exception {
     Client client = Mockito.mock(Client.class);
-    // return mockClient when Client constructor called with TEST_ARG_LOCALHOST
+    // return mockClient when Client constructor called with TEST_TARGET_HOSTNAME
     PowerMockito.whenNew(Client.class)
-            .withArguments(TEST_ARG_LOCALHOST)
+            .withArguments(TEST_TARGET_HOSTNAME)
             .thenReturn(client);
 
     // if specified to return emptyResult
