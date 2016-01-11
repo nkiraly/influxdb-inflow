@@ -37,7 +37,7 @@ public class AdminTest extends AbstractTest {
     // a successful changeUserPassword() call will return an empty result set
     // with no errors, etc
     assertEquals(
-            adminObject.changeUserPassword("test", "test"),
+            adminObject.changeUserPassword(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD),
             this.getEmptyQueryResult()
     );
     
@@ -63,6 +63,12 @@ public class AdminTest extends AbstractTest {
               @Override
               public QueryResult answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
+                if ( args[0] != null ) {
+                  String databaseName = args[0].toString();
+                }
+                if ( args[1] != null ) {
+                  Client.setLastQuery(args[1].toString());
+                }
                 return usersQueryResult;
               }
             });

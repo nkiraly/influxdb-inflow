@@ -72,17 +72,22 @@ public abstract class AbstractTest {
     });
 
     // return resultData QueryResult when calling query
-    Mockito.when(this.mockClient.query(anyString(), anyString())).thenAnswer(new Answer<QueryResult>() {
-      @Override
-      public QueryResult answer(InvocationOnMock invocation) throws Throwable {
-        Object[] args = invocation.getArguments();
-        String databaseName = args[0].toString();
-        Client.setLastQuery(args[1].toString());
-        Gson gson = new Gson();
-        QueryResult qr = gson.fromJson(resultData, QueryResult.class);
-        return qr;
-      }
-    });
+    Mockito.when(this.mockClient.query(anyString(), anyString()))
+            .thenAnswer(new Answer<QueryResult>() {
+              @Override
+              public QueryResult answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                if ( args[0] != null ) {
+                  String databaseName = args[0].toString();
+                }
+                if ( args[1] != null ) {
+                  Client.setLastQuery(args[1].toString());
+                }
+                Gson gson = new Gson();
+                QueryResult qr = gson.fromJson(resultData, QueryResult.class);
+                return qr;
+              }
+            });
 
     // mock and stub the DriverInterface the client is using
     this.mockDriver = Mockito.mock(DriverInterface.class);
@@ -142,13 +147,20 @@ public abstract class AbstractTest {
     // when calling query
     // with any parameters
     // return empty result data object
-    Mockito.when(client.query(anyString(), anyString())).thenAnswer(new Answer<QueryResult>() {
-      @Override
-      public QueryResult answer(InvocationOnMock invocation) throws Throwable {
-        Object[] args = invocation.getArguments();
-        return getEmptyQueryResult();
-      }
-    });
+    Mockito.when(client.query(anyString(), anyString()))
+            .thenAnswer(new Answer<QueryResult>() {
+              @Override
+              public QueryResult answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                if ( args[0] != null ) {
+                  String databaseName = args[0].toString();
+                }
+                if ( args[1] != null ) {
+                  Client.setLastQuery(args[1].toString());
+                }
+                return getEmptyQueryResult();
+              }
+            });
 
     return client;
   }

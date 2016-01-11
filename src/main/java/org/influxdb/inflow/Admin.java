@@ -31,7 +31,7 @@ public class Admin {
   }
 
   public QueryResult changeUserPassword(String username, String newPassword) throws InflowException {
-    String query = String.format("SET PASSWORD FOR %s '%s'", username, newPassword);
+    String query = String.format("SET PASSWORD FOR %s = '%s'", username, newPassword);
     return this.client.query(null, query);
   }
 
