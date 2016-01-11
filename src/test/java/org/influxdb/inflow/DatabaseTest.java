@@ -14,14 +14,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.BeforeSuite;
 
 public class DatabaseTest extends AbstractTest {
 
   protected String dataToInsert;
 
+  @BeforeSuite()
   @Override
-  public void setUp() throws Exception {
-    super.setUp();
+  public void beforeSuite() throws Exception {
+    super.beforeSuite();
 
     this.resultData = this.loadResourceFileDataAsString("/result.example.json");
 

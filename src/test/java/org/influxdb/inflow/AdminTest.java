@@ -9,12 +9,14 @@ import org.mockito.stubbing.Answer;
 import org.testng.annotations.Test;
 import static org.mockito.Matchers.anyString;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.BeforeSuite;
 
 public class AdminTest extends AbstractTest {
-  
+
+  @BeforeSuite()
   @Override
-  public void setUp() throws Exception {
-    super.setUp();
+  public void beforeSuite() throws Exception {
+    super.beforeSuite();
   }
   
   @Test

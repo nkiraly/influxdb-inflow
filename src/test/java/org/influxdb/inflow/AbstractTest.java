@@ -52,7 +52,7 @@ public abstract class AbstractTest {
 
   protected Database database;
 
-  public void setUp() throws Exception {
+  public void beforeSuite() throws Exception {
     this.mockClient = Mockito.mock(Client.class);
     // return mockClient when Client constructor called with TEST_TARGET_HOSTNAME
     PowerMockito.whenNew(Client.class)

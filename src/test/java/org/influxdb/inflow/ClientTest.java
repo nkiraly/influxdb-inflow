@@ -1,7 +1,6 @@
 package org.influxdb.inflow;
 
 import com.google.gson.Gson;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,14 +15,15 @@ import org.testng.annotations.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.BeforeSuite;
 
 public class ClientTest extends AbstractTest {
 
+  @BeforeSuite()
   @Override
-  public void setUp() throws Exception {
-    super.setUp();
+  public void beforeSuite() throws Exception {
+    super.beforeSuite();
   }
 
   protected Client client = null;
