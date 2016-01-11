@@ -23,9 +23,29 @@ public class AdminTest extends AbstractTest {
   public void testCreateUser() throws InflowException, Exception {
     Admin adminObject = this.getAdminObject();
 
+    // a successful createUser() call
+    // CREAT USER .. WITH PASSWORD ..
+    // will return an empty result set, if no no errors, etc
     assertEquals(
-            adminObject.createUser("test", "test", UserPrivilege.ALL),
+            adminObject.createUser("bofh234", "compy567", UserPrivilege.ALL),
             this.getEmptyQueryResult()
+    );
+    
+    // the default mockClient getAdminObject() uses from getMockClientThatReturnsEmptyQueryResult()
+    // sets the last query run, so validate last query value
+    assertEquals(
+            Client.getLastQuery(),
+            "CREATE USER bofh234 WITH PASSWORD 'compy567' WITH ALL PRIVILEGES"
+    );
+    
+    // same thing but do it for bobby ro the read only analyst
+    assertEquals(
+            adminObject.createUser("bobbyro32", "pomp78", UserPrivilege.READ),
+            this.getEmptyQueryResult()
+    );
+    assertEquals(
+            Client.getLastQuery(),
+            "CREATE USER bobbyro32 WITH PASSWORD 'pomp78' WITH READ PRIVILEGES"
     );
   }
 
@@ -36,8 +56,9 @@ public class AdminTest extends AbstractTest {
     // expected influx query to be run to reset user password
     String expectedInfluxQuery = "SET PASSWORD FOR " + this.TEST_TARGET_USERNAME + " = '" + this.TEST_TARGET_PASSWORD + "'";
 
-    // a successful changeUserPassword() call will return an empty result set
-    // with no errors, etc
+    // a successful changeUserPassword()
+    // SET PASSWORD FOR .. = '..'
+    // will return an empty result set, if no no errors, etc
     assertEquals(
             adminObject.changeUserPassword(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD),
             this.getEmptyQueryResult()
