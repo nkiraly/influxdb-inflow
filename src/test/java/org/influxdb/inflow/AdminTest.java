@@ -60,7 +60,7 @@ public class AdminTest extends AbstractTest {
     Client clientMock = this.getMockClient();
 
     // mock intended query result of show users when calling query()
-    Mockito.when(clientMock.query(this.TEST_TARGET_DATABSENAME, anyString()))
+    Mockito.when(clientMock.query(anyString(), anyString()))
             .thenAnswer(new Answer<QueryResult>() {
               @Override
               public QueryResult answer(InvocationOnMock invocation) throws Throwable {
