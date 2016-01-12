@@ -1,5 +1,7 @@
 package org.influxdb.dto;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -263,9 +265,18 @@ public class QueryResult {
     }
     
     public String[] getValuesAsStringArray() {
-      List<List<Object>> objectValues = this.values;
-      // TODO: does this give me all List<List<Object>> item values as an array ?
-      String[] stringVals = (String[])objectValues.toArray();
+      // create a flat list of all the right side values of the values list of lists
+      List<String> listValues = new ArrayList<>();
+
+      for (List<Object> valuesItem : this.values) {
+        for (Object o : valuesItem) {
+          listValues.add(o.toString());
+        }
+      }
+
+      // oracle says that a flat array should be "safe" in that there are no references to it
+      // this creates a safe referenceless array of the values
+      String[] stringVals = listValues.toArray(new String[0]);
       return stringVals;
     }
     

@@ -122,17 +122,31 @@ public class DatabaseTest extends AbstractTest {
   }
 
   @Test
-  public void testExists() throws InflowException {
+  public void testExists() throws InflowException, Exception {
+    
+    // use mock driver that will list dbs based on databases.example.json when asked
+    DriverInterface mockDriver = this.getMockClientThatListsTestDbs();
 
-    Database database = new Database("test", this.mockClient);
+    Client client = new Client(this.TEST_TARGET_HOSTNAME, this.TEST_TARGET_PORT, this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
+    client.setDriver(mockDriver);
+    
+    // create db object for test db with mocked client that will return it
+    Database database = new Database("test", client);
 
     assertEquals(database.exists(), true);
   }
 
   @Test
-  public void testNotExists() throws InflowException {
+  public void testNotExists() throws InflowException, Exception {
 
-    Database database = new Database("test_not_exists", this.mockClient);
+    // use mock driver that will list dbs based on databases.example.json when asked
+    DriverInterface mockDriver = this.getMockClientThatListsTestDbs();
+
+    Client client = new Client(this.TEST_TARGET_HOSTNAME, this.TEST_TARGET_PORT, this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
+    client.setDriver(mockDriver);
+    
+    // create db object for test db with mocked client that will not return it
+    Database database = new Database("test_not_exists", client);
 
     assertEquals(database.exists(), false);
   }

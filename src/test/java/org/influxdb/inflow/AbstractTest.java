@@ -13,6 +13,7 @@ import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -180,6 +181,35 @@ public abstract class AbstractTest {
                   Client.setLastQuery(args[1].toString());
                 }
                 return getEmptyQueryResult();
+              }
+            });
+
+    return mockDriver;
+  }
+  
+  protected DriverInterface getMockClientThatListsTestDbs() throws Exception {
+    Database database = new Database(TEST_TARGET_DATABSENAME, this.getMockClient());
+
+    DriverOnlyStubs mockDriver = Mockito.mock(DriverOnlyStubs.class);
+
+    // when mockDriver.query() with a query object of SHOW DATABASES target null database
+    // return a QueryResult deserialzed from databases.example.json
+    Query query = new Query("SHOW DATABASES", null);
+
+    final String databasesJson = this.loadResourceFileDataAsString("/databases.example.json");
+
+    Mockito.when(mockDriver.query(eq(query)))
+            .thenAnswer(new Answer<QueryResult>() {
+              @Override
+              public QueryResult answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                if (args[0] != null) {
+                  Query argQuery = (Query)args[0];
+                  Client.setLastQuery(argQuery.getCommand());
+                }
+                Gson gson = new Gson();
+                QueryResult qr = gson.fromJson(databasesJson, QueryResult.class);
+                return qr;
               }
             });
 

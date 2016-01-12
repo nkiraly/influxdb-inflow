@@ -137,11 +137,11 @@ public class ClientTest extends AbstractTest {
 
     expectedSeries.setValues(values);
 
-    // setup client with mock driver that will list dbs when asked
+    // create client with mock driver that will list dbs based on databases.example.json when asked
     Client client = this.getClient(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
     DriverInterface mockDriver = this.getMockClientThatListsTestDbs();
     client.setDriver(mockDriver);
-    
+
     QueryResult.Series resultSeries = client.listDatabases();
 
     // compare list database results to expected
@@ -234,35 +234,6 @@ public class ClientTest extends AbstractTest {
   protected Client getClient(String username, String password) {
 
     return this.getClient(username, password, false);
-  }
-
-  protected DriverInterface getMockClientThatListsTestDbs() throws Exception {
-    Database database = new Database(TEST_TARGET_DATABSENAME, this.getMockClient());
-
-    DriverOnlyStubs mockDriver = Mockito.mock(DriverOnlyStubs.class);
-
-    // when mockDriver.query() with a query object of SHOW DATABASES target null database
-    // return a QueryResult deserialzed from databases.example.json
-    Query query = new Query("SHOW DATABASES", null);
-
-    final String databasesJson = this.loadResourceFileDataAsString("/databases.example.json");
-
-    Mockito.when(mockDriver.query(eq(query)))
-            .thenAnswer(new Answer<QueryResult>() {
-              @Override
-              public QueryResult answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                if (args[0] != null) {
-                  Query argQuery = (Query)args[0];
-                  Client.setLastQuery(argQuery.getCommand());
-                }
-                Gson gson = new Gson();
-                QueryResult qr = gson.fromJson(databasesJson, QueryResult.class);
-                return qr;
-              }
-            });
-
-    return mockDriver;
   }
 
 }
