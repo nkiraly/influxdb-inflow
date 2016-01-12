@@ -150,14 +150,40 @@ public abstract class AbstractTest {
     DriverOnlyStubs mockDriver = Mockito.mock(DriverOnlyStubs.class);
 
     // NOTICE: same order as interface definition, keep it that way if you add more
-    // stub driver write variants to do nothing
+    // stub .write() variants to do nothing
     Mockito.doNothing().when(mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(InfluxDB.ConsistencyLevel.class), Mockito.anyString());
     Mockito.doNothing().when(mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(InfluxDB.ConsistencyLevel.class), Mockito.any(List.class));
     Mockito.doNothing().when(mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(Point.class));
     Mockito.doNothing().when(mockDriver).write(Mockito.any(BatchPoints.class));
-    // stub drive rquery variants to do nothing
-    Mockito.doNothing().when(mockDriver).query(any(Query.class));
-    Mockito.doNothing().when(mockDriver).query(any(Query.class), any(TimeUnit.class));
+    // stub .query() QueryDriverInterface methods to return empty QueryResult
+    Mockito.when(mockDriver.query(any(Query.class)))
+            .thenAnswer(new Answer<QueryResult>() {
+              @Override
+              public QueryResult answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                if ( args[0] != null ) {
+                  String databaseName = args[0].toString();
+                }
+                if ( args[1] != null ) {
+                  Client.setLastQuery(args[1].toString());
+                }
+                return getEmptyQueryResult();
+              }
+            });
+    Mockito.when(mockDriver.query(any(Query.class), any(TimeUnit.class)))
+            .thenAnswer(new Answer<QueryResult>() {
+              @Override
+              public QueryResult answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                if ( args[0] != null ) {
+                  String databaseName = args[0].toString();
+                }
+                if ( args[1] != null ) {
+                  Client.setLastQuery(args[1].toString());
+                }
+                return getEmptyQueryResult();
+              }
+            });
 
     return mockDriver;
   }
