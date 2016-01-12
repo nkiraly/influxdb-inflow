@@ -287,49 +287,52 @@ public class QueryResult {
         return false;
       }
 
-      if ( this.tags != null && series.tags != null ) {
+      // compare tags
+      if (this.tags != null && series.tags != null) {
+        // size check first and return as not equal if not
         if (this.tags.size() != series.tags.size()) {
           return false;
         }
+        // check tags and values are the same
         for (String key : this.tags.keySet()) {
           if (!this.tags.get(key).equals(series.tags.get(key))) {
             return false;
           }
         }
-      }
-      else if ( this.tags != null && series.tags == null ) {
+      } else if (this.tags != null && series.tags == null) {
+        return false;
+      } else if (this.tags == null && series.tags != null) {
         return false;
       }
-      else if ( this.tags == null && series.tags != null ) {
-        return false;
-      }
-      
+
       // List.equals will return true if values and order the same
       if (!Objects.equals(this.columns, series.columns)) {
         return false;
       }
       
-      // check values nulls before comparing lists contained
-      if ( this.values == null && series.values != null ) {
-        return false;
-      }
-      else if ( this.values != null && series.values == null ) {
-        return false;
-      }
-      else {
+      // compare values lists
+      if (this.values != null && series.values != null) {
+        // size check first and return as not equal if not
+        if (this.values.size() != series.values.size()) {
+          return false;
+        }
         // check that specified series (v2) contains all values of this (v1)
-        for ( Object v1 : this.values ) {
-          if ( ! series.values.contains(v1)) {
+        for (Object v1 : this.values) {
+          if (!series.values.contains(v1)) {
             return false;
           }
         }
         // check that this (v1) contains all values of specified series (v2)
-        for ( Object v2 : series.values ) {
-          if ( ! this.values.contains(v2)) {
+        for (Object v2 : series.values) {
+          if (!this.values.contains(v2)) {
             return false;
           }
         }
         // TODO: other List of Lists comparisons ?
+      } else if (this.values == null && series.values != null) {
+        return false;
+      } else if (this.values != null && series.values == null) {
+        return false;
       }
 
       return true;
