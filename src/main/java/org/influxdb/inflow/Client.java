@@ -84,15 +84,6 @@ public class Client {
   public Client(String host, int port, String username, String password) {
     this(host, port, username, password, false);
   }
-  public Client(String host, int port, String username) {
-    this(host, port, username, null);
-  }
-  public Client(String host, int port) {
-    this(host, port, null);
-  }
-  public Client(String host) {
-    this(host, 8086);
-  }
 
   /**
    * Use the specified database

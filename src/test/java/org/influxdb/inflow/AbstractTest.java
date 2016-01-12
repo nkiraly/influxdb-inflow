@@ -56,7 +56,7 @@ public abstract class AbstractTest {
     this.mockClient = Mockito.mock(Client.class);
     // return mockClient when Client constructor called with TEST_TARGET_HOSTNAME
     PowerMockito.whenNew(Client.class)
-            .withArguments(TEST_TARGET_HOSTNAME)
+            .withArguments(TEST_TARGET_HOSTNAME, TEST_TARGET_PORT, TEST_TARGET_USERNAME, TEST_TARGET_PASSWORD)
             .thenReturn(this.mockClient);    
 
     // return TEST_TARGET_URL when calling getBaseURI()
@@ -114,7 +114,7 @@ public abstract class AbstractTest {
     Client client = Mockito.mock(Client.class);
     // return mockClient when Client constructor called with TEST_TARGET_HOSTNAME
     PowerMockito.whenNew(Client.class)
-            .withArguments(TEST_TARGET_HOSTNAME)
+            .withArguments(TEST_TARGET_HOSTNAME, TEST_TARGET_PORT, TEST_TARGET_USERNAME, TEST_TARGET_PASSWORD)
             .thenReturn(client);
     return client;
   }
