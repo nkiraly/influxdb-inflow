@@ -253,7 +253,8 @@ public class ClientTest extends AbstractTest {
               public QueryResult answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
                 if (args[0] != null) {
-                  Client.setLastQuery(args[0].toString());
+                  Query argQuery = (Query)args[0];
+                  Client.setLastQuery(argQuery.getCommand());
                 }
                 Gson gson = new Gson();
                 QueryResult qr = gson.fromJson(databasesJson, QueryResult.class);
