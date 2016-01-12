@@ -67,15 +67,21 @@ public class DatabaseTest extends AbstractTest {
   }
 
   @Test
-  public void testQueries() throws InflowException, IOException {
+  public void testSelectQuery() throws InflowException, IOException {
     final String resultJson = this.loadResourceFileDataAsString("/result.example.json");
 
     Gson gson = new Gson();
     QueryResult testQueryResult = gson.fromJson(resultJson, QueryResult.class);
 
     assertEquals(this.database.query("SELECT * FROM test_metric"), testQueryResult);
+
+    assertEquals(Client.getLastQuery(), "SELECT * FROM test_metric");
+  }
+  
+  @Test
+  public void testDrop() throws InflowException, IOException {
     this.database.drop();
-    assertEquals("DROP DATABASE influx_test_db", Client.getLastQuery());
+    assertEquals("DROP DATABASE " + this.TEST_TARGET_DATABSENAME, Client.getLastQuery());
   }
 
   @Test

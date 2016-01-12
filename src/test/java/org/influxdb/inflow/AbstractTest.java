@@ -32,21 +32,21 @@ public abstract class AbstractTest {
    *
    * if you change a value, change it in all the TEST_TARGET_ entries * to match
    */
-  protected String TEST_TARGET_HOSTNAME = "localhost";
+  protected String TEST_TARGET_HOSTNAME = "inflow.local";
   
   protected int TEST_TARGET_PORT = 8086;
 
-  protected String TEST_TARGET_DATABSENAME = "testdb";
+  protected String TEST_TARGET_DATABSENAME = "inflow_test_db";
   
-  protected String TEST_TARGET_USERNAME = "testdb";
+  protected String TEST_TARGET_USERNAME = "inflow_user";
   
-  protected String TEST_TARGET_PASSWORD = "testdb";
+  protected String TEST_TARGET_PASSWORD = "inflow_password";
 
-  protected String TEST_TARGET_URL = "http://localhost:8086";
+  protected String TEST_TARGET_URL = "http://inflow.local:8086";
 
-  protected String TEST_TARGET_URI = "https+influxdb://test:test@localhost:8086/";
+  protected String TEST_TARGET_URI = "https+influxdb://inflow_user:inflow_password@inflow.local:8086/";
 
-  protected String TEST_TARGET_URI_WITH_DB = "https+influxdb://test:test@localhost:8086/testdb";
+  protected String TEST_TARGET_URI_WITH_DB = "https+influxdb://inflow_user:inflow_password@inflow.local:8086/inflow_test_db";
 
   protected String EMPTY_RESULT_JSON = "{\"results\":[{}]}";
 
