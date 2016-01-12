@@ -24,14 +24,10 @@ import org.testng.annotations.Test;
 
 public class DatabaseTest extends AbstractTest {
 
-  protected String dataToInsert;
-
   @BeforeSuite()
   @Override
   public void beforeSuite() throws Exception {
     super.beforeSuite();
-
-    this.dataToInsert = this.loadResourceFileDataAsString("/input.example.json");
     
     this.database = new Database(TEST_TARGET_DATABSENAME, this.mockClient);
   }
@@ -160,8 +156,11 @@ public class DatabaseTest extends AbstractTest {
   }
 
   @Test
-  public void testWritePointsInASingleCall() throws InflowException {
+  public void testWritePointsInASingleCall() throws InflowException, IOException {
+    
+    String pointsJson = this.loadResourceFileDataAsString("/input.example.json");
 
+    // points to insert same as input.example.json
     Point point1 = Point
             .measurement("cpu_load_short")
             .field("value", 0.64)
@@ -176,10 +175,19 @@ public class DatabaseTest extends AbstractTest {
             .field("value", 0.84)
             .build();
 
-    // check call runs without error (driver is mocked driver)
-    this.database.writePoints(new Point[]{point1, point2});
+    // use nop mock driver to verify calls
+    Client client = new Client(this.TEST_TARGET_HOSTNAME, this.TEST_TARGET_PORT, this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
 
-    // TODO: mock call and confirm methods
+    DriverInterface mockDriver = this.getMockDriverThatDoesNothing();
+
+    client.setDriver(mockDriver);
+
+    Database database = new Database(TEST_TARGET_DATABSENAME, client);
+
+    // check call runs without error (driver is mocked driver)
+    database.writePoints(new Point[]{point1, point2});
+
+    // TODO: confirm driver write() calls made correctly
   }
 
   protected Database getTestDatabase(String name) throws Exception, Exception {
