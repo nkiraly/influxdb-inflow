@@ -14,7 +14,7 @@ Until I sort that out, /mvn install/ this project locally and then you can use i
     <dependency>
       <groupId>org.influxdb</groupId>
       <artifactId>influxdb-inflow</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>0.1.1-SNAPSHOT</version>
     </dependency>
 ```
 
@@ -28,6 +28,9 @@ Until I sort that out, /mvn install/ this project locally and then you can use i
 
 ## Changelog
 
+### 0.1.1
+* Implementation refinement
+
 ### 0.1.0
-* Initial release
+* Development release
 * InfluxDB 0.9.4 support
