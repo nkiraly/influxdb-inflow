@@ -287,13 +287,21 @@ public class QueryResult {
         return false;
       }
 
-      if (this.tags.size() != series.tags.size()) {
-        return false;
-      }
-      for (String key : this.tags.keySet()) {
-        if (!this.tags.get(key).equals(series.tags.get(key))) {
+      if ( this.tags != null && series.tags != null ) {
+        if (this.tags.size() != series.tags.size()) {
           return false;
         }
+        for (String key : this.tags.keySet()) {
+          if (!this.tags.get(key).equals(series.tags.get(key))) {
+            return false;
+          }
+        }
+      }
+      else if ( this.tags != null && series.tags == null ) {
+        return false;
+      }
+      else if ( this.tags == null && series.tags != null ) {
+        return false;
       }
       
       // List.equals will return true if values and order the same
