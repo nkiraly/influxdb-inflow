@@ -1,12 +1,18 @@
 package org.influxdb.inflow;
 
 import com.google.gson.Gson;
+import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDB.RetentionPolicy;
+import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
+import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doThrow;
@@ -24,17 +30,6 @@ public class DatabaseTest extends AbstractTest {
   @Override
   public void beforeSuite() throws Exception {
     super.beforeSuite();
-
-    this.resultData = this.loadResourceFileDataAsString("/result.example.json");
-
-    // return these databases when calling listDatabases()
-    Mockito.when(this.mockClient.listDatabases()).thenAnswer(new Answer<String[]>() {
-      @Override
-      public String[] answer(InvocationOnMock invocation) throws Throwable {
-        Object[] args = invocation.getArguments();
-        return new String[]{"test123", "test"};
-      }
-    });
 
     this.dataToInsert = this.loadResourceFileDataAsString("/input.example.json");
   }
@@ -72,13 +67,15 @@ public class DatabaseTest extends AbstractTest {
   }
 
   @Test
-  public void testQueries() throws InflowException {
+  public void testQueries() throws InflowException, IOException {
+    final String resultJson = this.loadResourceFileDataAsString("/result.example.json");
+
     Gson gson = new Gson();
-    QueryResult testQueryResult = gson.fromJson(this.resultData, QueryResult.class);
+    QueryResult testQueryResult = gson.fromJson(resultJson, QueryResult.class);
+
     assertEquals(this.database.query("SELECT * FROM test_metric"), testQueryResult);
     this.database.drop();
     assertEquals("DROP DATABASE influx_test_db", Client.getLastQuery());
-
   }
 
   @Test
@@ -108,6 +105,7 @@ public class DatabaseTest extends AbstractTest {
 
   @Test
   public void testCreate() throws InflowDatabaseException, InflowException {
+
     // test create with retention policy
     this.database.create(this.getTestRetentionPolicy(), true);
     assertEquals("CREATE RETENTION POLICY test_retention_policy ON " + this.TEST_TARGET_DATABSENAME + " DURATION 1d REPLICATION 1 DEFAULT",
@@ -123,14 +121,6 @@ public class DatabaseTest extends AbstractTest {
     assertEquals("CREATE DATABASE " + this.TEST_TARGET_DATABSENAME, Client.lastQuery);
   }
 
-  @Test(expectedExceptions = InflowException.class)
-  public void testCreateException() throws InflowException, InflowDatabaseException {
-    // test an exception being handled correctly
-    doThrow(new Exception()).when(this.mockClient).query(this.TEST_TARGET_DATABSENAME, anyString());
-    this.database.create(this.getTestRetentionPolicy(), false);
-  }
-
-
   @Test
   public void testExists() throws InflowException {
 
@@ -138,7 +128,6 @@ public class DatabaseTest extends AbstractTest {
 
     assertEquals(database.exists(), true);
   }
-
 
   @Test
   public void testNotExists() throws InflowException {

@@ -49,8 +49,6 @@ public abstract class AbstractTest {
 
   protected String EMPTY_RESULT_JSON = "{\"results\":[{}]}";
 
-  protected String resultData;
-
   protected Database database;
 
   public void beforeSuite() throws Exception {
@@ -58,12 +56,9 @@ public abstract class AbstractTest {
     // return mockClient when Client constructor called with TEST_TARGET_HOSTNAME
     PowerMockito.whenNew(Client.class)
             .withArguments(TEST_TARGET_HOSTNAME)
-            .thenReturn(this.mockClient);
+            .thenReturn(this.mockClient);    
 
-    // load result example json
-    this.resultData = this.loadResourceFileDataAsString("/result.example.json");
-
-    // return this string when calling getBaseURI()
+    // return TEST_TARGET_URL when calling getBaseURI()
     Mockito.when(this.mockClient.getBaseURI()).thenAnswer(new Answer<String>() {
       @Override
       public String answer(InvocationOnMock invocation) throws Throwable {
@@ -72,7 +67,8 @@ public abstract class AbstractTest {
       }
     });
 
-    // return resultData QueryResult when calling query
+    // return QueryResult based on result.example.json when calling query() with any params
+    final String resultJson = this.loadResourceFileDataAsString("/result.example.json");
     Mockito.when(this.mockClient.query(anyString(), anyString()))
             .thenAnswer(new Answer<QueryResult>() {
               @Override
@@ -85,7 +81,7 @@ public abstract class AbstractTest {
                   Client.setLastQuery(args[1].toString());
                 }
                 Gson gson = new Gson();
-                QueryResult qr = gson.fromJson(resultData, QueryResult.class);
+                QueryResult qr = gson.fromJson(resultJson, QueryResult.class);
                 return qr;
               }
             });
