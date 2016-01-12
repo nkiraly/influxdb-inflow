@@ -32,6 +32,8 @@ public class DatabaseTest extends AbstractTest {
     super.beforeSuite();
 
     this.dataToInsert = this.loadResourceFileDataAsString("/input.example.json");
+    
+    this.database = new Database(TEST_TARGET_DATABSENAME, this.mockClient);
   }
 
   @Test

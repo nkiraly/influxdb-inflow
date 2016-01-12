@@ -90,8 +90,6 @@ public abstract class AbstractTest {
     // have mockClient use the mockDriverThatDoesNothing
     DriverInterface mockDriver = this.getMockDriverThatDoesNothing();
     this.mockClient.setDriver(mockDriver);
-
-    this.database = new Database(TEST_TARGET_DATABSENAME, this.mockClient);
   }
   
   protected String loadResourceFileDataAsString(String resourceFileName) throws IOException {
