@@ -6,10 +6,10 @@ import org.influxdb.dto.QueryResult;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import static org.mockito.Matchers.anyString;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.BeforeSuite;
 
 public class AdminTest extends AbstractTest {
 

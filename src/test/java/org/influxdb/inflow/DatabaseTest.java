@@ -8,13 +8,13 @@ import org.influxdb.dto.QueryResult;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.BeforeSuite;
 
 public class DatabaseTest extends AbstractTest {
 

@@ -17,6 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeSuite;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.testng.Assert.assertEquals;
 
 public class ClientTest extends AbstractTest {
 
@@ -26,11 +29,9 @@ public class ClientTest extends AbstractTest {
     super.beforeSuite();
   }
 
-  protected Client client = null;
-
   @Test
   public void testGetters() {
-    Client client = this.getClient();
+    Client client = this.getClient(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
 
     assertThat(client.getDriver(), instanceOf(DriverInterface.class));
 
@@ -41,7 +42,7 @@ public class ClientTest extends AbstractTest {
 
   @Test
   public void testSelectDbShouldReturnDatabaseInstance() throws InflowException {
-    Client client = this.getClient();
+    Client client = this.getClient(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
 
     Database database = client.selectDB(this.TEST_TARGET_DATABSENAME);
 
@@ -120,7 +121,7 @@ public class ClientTest extends AbstractTest {
   }
 
   protected void doTestResponse(String responseFile, String method, QueryResult.Series expectedSeries) throws Exception {
-    Client client = this.getClient();
+    Client client = this.getClient(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
 
     // mock and stub the QueryDriverInterface the client will use
     DriverOnlyStubs mockDriver = Mockito.mock(DriverOnlyStubs.class);
@@ -162,7 +163,7 @@ public class ClientTest extends AbstractTest {
 
         // this is in here testing Database.fromURI because
         // the reference database object is made from referenceClient
-        Database referenceDatabase = client.selectDB(this.TEST_TARGET_DATABSENAME);
+        Database referenceDatabase = referenceClient.selectDB(this.TEST_TARGET_DATABSENAME);
 
         Database fromURIDatabase = Database.fromURI(this.TEST_TARGET_DSN_WITH_DB);
 
@@ -178,16 +179,6 @@ public class ClientTest extends AbstractTest {
   protected Client getClient(String username, String password) {
 
     return this.getClient(username, password, false);
-  }
-
-  protected Client getClient(String username) {
-
-    return this.getClient(username, "");
-  }
-
-  protected Client getClient() {
-
-    return this.getClient("");
   }
 
 }
