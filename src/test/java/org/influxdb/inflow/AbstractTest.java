@@ -32,6 +32,8 @@ public abstract class AbstractTest {
    * if you change a value, change it in all the TEST_TARGET_ entries * to match
    */
   protected String TEST_TARGET_HOSTNAME = "localhost";
+  
+  protected int TEST_TARGET_PORT = 8086;
 
   protected String TEST_TARGET_DATABSENAME = "testdb";
   

@@ -161,28 +161,26 @@ public class ClientTest extends AbstractTest {
     );
   }
     
-    @Test
-  public void testURIFactorys() throws InflowException
-    {
-        Client referenceClient = this.getClient(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD, true);
+  @Test
+  public void testURIFactory() throws InflowException {
+    // compare clients made with new Client and fromURI factory
+    Client referenceClient = new Client(this.TEST_TARGET_HOSTNAME, this.TEST_TARGET_PORT, this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
+    Client fromURIClient = Client.fromURI(this.TEST_TARGET_URI);
 
-        Client fromURIClient = Client.fromURI(this.TEST_TARGET_URI);
+    assertEquals(
+            fromURIClient.getHost(),
+            referenceClient.getHost()
+    );
 
-        assertEquals(referenceClient, fromURIClient);
-
-        // this is in here testing Database.fromURI because
-        // the reference database object is made from referenceClient
-        Database referenceDatabase = referenceClient.selectDB(this.TEST_TARGET_DATABSENAME);
-
-        Database fromURIDatabase = Database.fromURI(this.TEST_TARGET_URI_WITH_DB);
-
-        assertEquals(referenceDatabase, fromURIDatabase);
-
-    }
+    assertEquals(
+            fromURIClient.getBaseURI(),
+            referenceClient.getBaseURI()
+    );
+  }
 
   protected Client getClient(String username, String password, boolean ssl) {
 
-    return new Client(this.TEST_TARGET_HOSTNAME, 8086, username, password, ssl);
+    return new Client(this.TEST_TARGET_HOSTNAME, this.TEST_TARGET_PORT, username, password, ssl);
   }
 
   protected Client getClient(String username, String password) {

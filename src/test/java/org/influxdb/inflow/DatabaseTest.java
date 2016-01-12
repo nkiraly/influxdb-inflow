@@ -44,6 +44,32 @@ public class DatabaseTest extends AbstractTest {
     assertThat(this.database.getClient(), instanceOf(Client.class));
     assertThat(this.database.getQueryBuilder(), instanceOf(QueryBuilder.class));
   }
+  
+  @Test
+  public void testURIFactory() throws InflowException {
+    // compare database objects made with selectDB() and fromURI()
+    // the reference database object is made from referenceClient
+    Database referenceDatabase = new Database(
+            this.TEST_TARGET_DATABSENAME,
+            new Client(this.TEST_TARGET_HOSTNAME, this.TEST_TARGET_PORT, this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD)
+    );
+    Database fromURIDatabase = Database.fromURI(this.TEST_TARGET_URI_WITH_DB);
+
+    assertEquals(
+            referenceDatabase.getName(),
+            fromURIDatabase.getName()
+    );
+
+    assertEquals(
+            fromURIDatabase.getClient().getHost(),
+            referenceDatabase.getClient().getHost()
+    );
+
+    assertEquals(
+            fromURIDatabase.getClient().getBaseURI(),
+            referenceDatabase.getClient().getBaseURI()
+    );
+  }
 
   @Test
   public void testQueries() throws InflowException {
