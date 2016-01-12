@@ -9,11 +9,11 @@ import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.QueryResult;
-import static org.mockito.Matchers.anyString;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import static org.mockito.Matchers.anyString;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -44,11 +44,9 @@ public abstract class AbstractTest {
 
   protected String TEST_TARGET_DSN_WITH_DB = "https+influxdb://test:test@localhost:8086/testdb";
 
-  protected String emptyResult = "{\"results\":[{}]}";
+  protected String EMPTY_RESULT_JSON = "{\"results\":[{}]}";
 
   protected String resultData;
-
-  protected QueryResult mockQueryResult;
 
   protected Database database;
 
@@ -113,17 +111,8 @@ public abstract class AbstractTest {
     return contents;
   }
 
-  public QueryResult getMockQueryResult() {
-    return this.mockQueryResult;
-  }
-
-  public QueryResult setMockQueryResult(QueryResult mockQueryResult) {
-    this.mockQueryResult = mockQueryResult;
-    return this.mockQueryResult;
-  }
-
   public String getEmptyResult() {
-    return this.emptyResult;
+    return this.EMPTY_RESULT_JSON;
   }
   
   public QueryResult getEmptyQueryResult() {
