@@ -12,11 +12,11 @@ import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
-import static org.mockito.Matchers.anyString;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -41,9 +41,9 @@ public abstract class AbstractTest {
 
   protected String TEST_TARGET_URL = "http://localhost:8086";
 
-  protected String TEST_TARGET_DSN = "https+influxdb://test:test@localhost:8086/";
+  protected String TEST_TARGET_URI = "https+influxdb://test:test@localhost:8086/";
 
-  protected String TEST_TARGET_DSN_WITH_DB = "https+influxdb://test:test@localhost:8086/testdb";
+  protected String TEST_TARGET_URI_WITH_DB = "https+influxdb://test:test@localhost:8086/testdb";
 
   protected String EMPTY_RESULT_JSON = "{\"results\":[{}]}";
 

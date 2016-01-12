@@ -2,19 +2,19 @@ package org.influxdb.inflow;
 
 import com.google.gson.Gson;
 import java.util.concurrent.TimeUnit;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import org.influxdb.InfluxDB.RetentionPolicy;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.QueryResult;
+import static org.mockito.Matchers.anyString;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doThrow;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.testng.Assert.assertEquals;
 
 public class DatabaseTest extends AbstractTest {
 

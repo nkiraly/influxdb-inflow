@@ -3,13 +3,13 @@ package org.influxdb.inflow;
 import com.google.gson.Gson;
 import org.influxdb.InfluxDB.UserPrivilege;
 import org.influxdb.dto.QueryResult;
+import static org.mockito.Matchers.anyString;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
-import static org.mockito.Matchers.anyString;
-import static org.testng.Assert.assertEquals;
 
 public class AdminTest extends AbstractTest {
 

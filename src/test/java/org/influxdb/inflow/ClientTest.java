@@ -6,20 +6,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
+import static org.mockito.Matchers.any;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.testng.annotations.Test;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeSuite;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Test;
 
 public class ClientTest extends AbstractTest {
 
@@ -169,7 +166,7 @@ public class ClientTest extends AbstractTest {
     {
         Client referenceClient = this.getClient(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD, true);
 
-        Client fromURIClient = Client.fromURI(this.TEST_TARGET_DSN);
+        Client fromURIClient = Client.fromURI(this.TEST_TARGET_URI);
 
         assertEquals(referenceClient, fromURIClient);
 
@@ -177,7 +174,7 @@ public class ClientTest extends AbstractTest {
         // the reference database object is made from referenceClient
         Database referenceDatabase = referenceClient.selectDB(this.TEST_TARGET_DATABSENAME);
 
-        Database fromURIDatabase = Database.fromURI(this.TEST_TARGET_DSN_WITH_DB);
+        Database fromURIDatabase = Database.fromURI(this.TEST_TARGET_URI_WITH_DB);
 
         assertEquals(referenceDatabase, fromURIDatabase);
 
