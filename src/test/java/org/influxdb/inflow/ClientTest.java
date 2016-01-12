@@ -35,9 +35,19 @@ public class ClientTest extends AbstractTest {
 
     assertThat(client.getDriver(), instanceOf(DriverInterface.class));
 
-    assertEquals(this.TEST_TARGET_URL, client.getBaseURI());
-    assertEquals(this.TEST_TARGET_HOSTNAME, client.getHost());
-    assertEquals('0', client.getTimeout());
+    // confirm basic getters return expected values
+    assertEquals(
+            client.getBaseURI(),
+            this.TEST_TARGET_URL
+    );
+    assertEquals(
+            client.getHost(),
+            this.TEST_TARGET_HOSTNAME
+    );
+    assertEquals(
+            client.getTimeout(),
+            0
+    );
   }
 
   @Test
@@ -123,12 +133,11 @@ public class ClientTest extends AbstractTest {
   protected void doTestResponse(String responseFile, String method, QueryResult.Series expectedSeries) throws Exception {
     Client client = this.getClient(this.TEST_TARGET_USERNAME, this.TEST_TARGET_PASSWORD);
 
-    // mock and stub the QueryDriverInterface the client will use
+    // setup a mock driver that always returns responseFile contents as QueryResult object
     DriverOnlyStubs mockDriver = Mockito.mock(DriverOnlyStubs.class);
 
-    // return responseFile contents calling driver query with any parameter
-    client.setDriver(mockDriver);
     final String expectedResponseJson = this.loadResourceFileDataAsString(responseFile);
+
     Mockito.when(mockDriver.query(any(Query.class))).thenAnswer(new Answer<QueryResult>() {
       @Override
       public QueryResult answer(InvocationOnMock invocation) throws Throwable {
@@ -149,7 +158,10 @@ public class ClientTest extends AbstractTest {
 
     Method callMethod = Client.class.getDeclaredMethod(method, noParam);
     QueryResult.Series resultSeries = (QueryResult.Series) callMethod.invoke(client, null);
-    assertEquals(expectedSeries, resultSeries);
+    assertEquals(
+            resultSeries,
+            expectedSeries
+    );
   }
     
     @Test

@@ -4,11 +4,14 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
+import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
+import static org.mockito.Matchers.any;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -20,8 +23,6 @@ import static org.testng.Assert.assertTrue;
 public abstract class AbstractTest {
 
   protected Client mockClient;
-
-  protected DriverInterface mockDriver;
 
   /**
    * these various TEST_TARGET_ variables are compared for consistency in the various tests.
@@ -87,18 +88,9 @@ public abstract class AbstractTest {
               }
             });
 
-    // mock and stub the DriverInterface the client is using
-    this.mockDriver = Mockito.mock(DriverInterface.class);
-    
-    // stub driver write variants to do nothing
-    // NOTICE: same order as interface definition, keep it that way if you add more
-    Mockito.doNothing().when(this.mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(InfluxDB.ConsistencyLevel.class), Mockito.anyString());
-    Mockito.doNothing().when(this.mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(InfluxDB.ConsistencyLevel.class), Mockito.any(List.class));
-    Mockito.doNothing().when(this.mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(Point.class));
-    Mockito.doNothing().when(this.mockDriver).write(Mockito.any(BatchPoints.class));
-
-    // specify mockDriver as the driver to use for mockClient
-    this.mockClient.setDriver(this.mockDriver);
+    // have mockClient use the mockDriverThatDoesNothing
+    DriverInterface mockDriver = this.getMockDriverThatDoesNothing();
+    this.mockClient.setDriver(mockDriver);
 
     this.database = new Database(TEST_TARGET_DATABSENAME, this.mockClient);
   }
@@ -152,6 +144,22 @@ public abstract class AbstractTest {
             });
 
     return client;
+  }
+  
+  public DriverInterface getMockDriverThatDoesNothing() throws InflowException {
+    DriverOnlyStubs mockDriver = Mockito.mock(DriverOnlyStubs.class);
+
+    // NOTICE: same order as interface definition, keep it that way if you add more
+    // stub driver write variants to do nothing
+    Mockito.doNothing().when(mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(InfluxDB.ConsistencyLevel.class), Mockito.anyString());
+    Mockito.doNothing().when(mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(InfluxDB.ConsistencyLevel.class), Mockito.any(List.class));
+    Mockito.doNothing().when(mockDriver).write(Mockito.anyString(), Mockito.any(InfluxDB.RetentionPolicy.class), Mockito.any(Point.class));
+    Mockito.doNothing().when(mockDriver).write(Mockito.any(BatchPoints.class));
+    // stub drive rquery variants to do nothing
+    Mockito.doNothing().when(mockDriver).query(any(Query.class));
+    Mockito.doNothing().when(mockDriver).query(any(Query.class), any(TimeUnit.class));
+
+    return mockDriver;
   }
 
 }
