@@ -50,7 +50,7 @@ public class Client {
    */
   protected static String lastQuery;
 
-  public Client(String host, int port, String username, String password, boolean ssl, boolean verifySSL, int timeout) {
+  public Client(String host, int port, String username, String password, boolean useHttps, boolean verifySSL, int timeout) {
     this.host = host;
     this.port = port;
     this.username = username;
@@ -58,11 +58,8 @@ public class Client {
     this.timeout = timeout;
     this.verifySSL = verifySSL;
 
-    this.options = new HashMap<>();
-
-    if (ssl) {
+    if (useHttps) {
       this.scheme = "https";
-      this.options.put("verify", this.verifySSL);
     }
 
     // the the base URI
@@ -176,8 +173,8 @@ public class Client {
    * 
    * Examples:
    *
-   * https+influxdb://username:pass@localhost:8086/databasename
-   * udp+influxdb://username:pass@localhost:4444/databasename
+   * https://username:pass@localhost:8086/databasename
+   * udp://username:pass@localhost:4444/databasename
    *
    */
   public static Client fromURI(String uri, int timeout, boolean verifySSL) throws InflowException {
@@ -186,22 +183,16 @@ public class Client {
     try {
       u = new URI(uri);
     } catch (URISyntaxException use) {
-      throw new InflowException("Malformed DSN URI:" + use.getMessage(), use);
+      throw new InflowException("Malformed URI:" + use.getMessage(), use);
     }
 
-    String[] schemeInfo = u.getScheme().split("+");
-    String modifier = null;
-    String scheme = schemeInfo[0].toLowerCase();
-    if (schemeInfo.length > 1) {
-      scheme = schemeInfo[1].toLowerCase();
+    String scheme = u.getScheme().toLowerCase();
+
+    boolean useHttps = false;
+    if (scheme.equals("https")) {
+      useHttps = true;
     }
-    if (!scheme.equals("influxdb")) {
-      throw new InflowException("Invalid scheme: " + scheme);
-    }
-    boolean ssl = false;
-    if ( modifier.equals("https")) {
-      ssl = true;
-    }
+
     String username = null;
     String password = null;
     if (!u.getUserInfo().isEmpty()) {
@@ -217,13 +208,13 @@ public class Client {
             u.getPort(),
             username,
             password,
-            ssl,
+            useHttps,
             verifySSL,
             timeout
     );
 
-    // set the UDP driver when the DSN specifies UDP
-    if (modifier.equals("udp")) {
+    // set the UDP driver when the URI specifies UDP
+    if (scheme.equals("udp")) {
       client.setDriver(new DriverUDP(u.getHost(), u.getPort()));
     }
 

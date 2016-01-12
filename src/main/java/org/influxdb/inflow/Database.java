@@ -29,18 +29,28 @@ public class Database {
     this.client = client;
   }
   
+  /**
+   * Build the database object from a URI.
+   *
+   * Examples:
+   *
+   * https://username:pass@localhost:8086/databasename
+   * udp://username:pass@localhost:4444/databasename
+   *
+   */
   public static Database fromURI(String uri, int timeout, boolean verifySSL) throws InflowException {
 
     Client client = Client.fromURI(uri, timeout, verifySSL);
+
+    String databaseName = null;
 
     URI u;
     try {
       u = new URI(uri);
     } catch (URISyntaxException use) {
-      throw new InflowException("Malformed DSN URI:" + use.getMessage(), use);
+      throw new InflowException("Malformed URI:" + use.getMessage(), use);
     }
 
-    String databaseName = null;
     if (!u.getPath().isEmpty()) {
       databaseName = u.getPath().substring(1);
     }
