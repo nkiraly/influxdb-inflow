@@ -288,7 +288,7 @@ client.admin.revoke(InfluxDB.UserPrivilege.ALL, "admin_user");
 ## Changelog
 
 ### 0.2.0
-*
+* Documentation updates
 
 ### 0.1.3
 * Update packaging to com.koadweb.inflow
