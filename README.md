@@ -160,43 +160,23 @@ Client client = Client.fromURI(influxdbURI);
 DriverInterface driver = new DriverUDP(client.getHost(), 4444);
 client.setDriver(driver);
     
-// create a point to be recorded as "now"
-Point point5 = Point
-        .measurement("test_metric")
-        .field("value", 0.85)
-        .tag("host", "server01")
-        .tag("region", "us-west")
-        .tag("proto", "udp")
-        .field("cpucount", 10)
-        .build();
+  Point point5 = Point
+          .measurement("test_metric")
+          .field("value", 0.85)
+          .tag("host", "server01")
+          .tag("region", "us-west")
+          .tag("proto", "udp")
+          .field("cpucount", 10)
+          .build();
 
-// write the point
-Point[] points = new Point[]{point5};
-database.writePoints(points);
+  // write the point using UDP
+  database.writePoint(point5);
 ```
 
 #### Timestamp precision
 
 It's important to provide the correct precision when adding a timestamp to a Point object. This is because
-if you specify a timestamp in seconds and the default (nanosecond) precision is set; the entered timestamp will be invalid.
-
-```php
-// Points will require a nanosecond precision (this is default as per influxdb standard)
-$newPoints = $database->writePoints($points);
-
-// Points will require second precision
-$newPoints = $database->writePoints($points, Database::PRECISION_SECONDS);
-    
-// Points will require microsecond precision
-$newPoints = $database->writePoints($points, Database::PRECISION_MICROSECONDS);
-```
-
-Please note that `exec('date + %s%N')` does NOT work under MacOS; you can use PHP's `microtime` to get a timestamp with microsecond precision, like such:
-
-```php
-list($usec, $sec) = explode(' ', microtime());
-$timestamp = sprintf('%d%06d', $sec, $usec*1000000);
-```
+if you specify a timestamp in seconds and the default (nanosecond) precision is set; the entered timestamp will be invalid. See use of TimeUnit enums for examples on specifying a specific precision.
 
 ### Creating databases
 
@@ -205,77 +185,76 @@ so the data will be flushed with the memory.
 
 This library makes it easy to provide a retention policy when creating a database:
 
-```php
+```java
 // create the client
-$client = new \InfluxDB\Client($host, $port, '', '');
+Client client = new Client("influxdb.local", 8086, "inflowexample", "inflow011");
 
 // select the database
-$database = $client->selectDB('influx_test_db');
+$database = client.selectDB('influx_test_db');
 
 // create the database with a retention policy
-$result = $database->create(new RetentionPolicy('test', '5d', 1, true));   
+database.create(new RetentionPolicy("test", "5d", 1, true));
      
 // check if a database exists then create it if it doesn't
-$database = $client->selectDB('test_db');
+Database database = client.selectDB("inflow_test");
     
-if (!$database->exists()) {
-  $database->create(new RetentionPolicy('test', '1d', 2, true));
+if (!database.exists()) {
+  database.create(new RetentionPolicy("test", "1d", 2, true));   
 }  
 ```
 
 You can also alter retention policies:
 
-```php
-$database->alterRetentionPolicy(new RetentionPolicy('test', '2d', 5, true));
+```java
+database.alterRetentionPolicy(new RetentionPolicy("test", "2d", 5, true));
 ```
 
 and list them:
 
-```php
-$result = $database->listRetentionPolicies();
+```java
+Series series = database.listRetentionPolicies();
 ```
 
 You can add more retention policies to a database:
 
-```php
-$result = $database->createRetentionPolicy(new RetentionPolicy('test2', '30d', 1, true));
+```java
+database.createRetentionPolicy(new RetentionPolicy("test2", "30d", 1, false));
 ```
 
 ### Client functions
 
 Some functions are too general for a database. So these are available in the client:
 
-```php
+```java
 // list users
-$result = $client->listUsers();
+Series usersSeries = client.listUsers();
 
 // list databases
-$result = $client->listDatabases();
+Series databasesSeries = client.listDatabases();
 ```
 
 ### Admin functionality
 
-You can use the client's $client->admin functionality to administer InfluxDB via the API.
+You can use the client's client.admin functionality to administer InfluxDB via the API.
 
-```php
+```java
 // add a new user without privileges
-$client->admin->createUser('testuser123', 'testpassword');
+client.createUser("testuser123", "testpassword");
 
 // add a new user with ALL cluster-wide privileges
-$client->admin->createUser('admin_user', 'password', \InfluxDB\Client\Admin::PRIVILEGE_ALL);
+client.admin.createUser("admin_user", "password", InfluxDB.UserPrivilege.ALL);
 
 // drop user testuser123
-$client->admin->dropUser('testuser123');
+client.admin.dropUser("testuser123");
 ```
 
 List all the users:
 
-```php
+```java
 // show a list of all users
-$results = $client->admin->showUsers();
+QueryResult usersResults = client.admin.showUsers();
 
-// show users returns a ResultSet object
-$users = $results->getPoints();
+String[] users = usersResults.getValuesAsStringArray();
 ```
 
 #### Granting and revoking privileges
@@ -283,28 +262,23 @@ $users = $results->getPoints();
 Granting permissions can be done on both the database level and cluster-wide. 
 To grant a user specific privileges on a database, provide a database object or a database name.
 
-```php
+```java
 // grant permissions using a database object
-$database = $client->selectDB('test_db');
-$client->admin->grant(\InfluxDB\Client\Admin::PRIVILEGE_READ, 'testuser123', $database);
+Database database = client.selectDB("test_db");
+client.admin.grant(InfluxDB.UserPrivilege.READ, "testuser123", database);
 
 // give user testuser123 read privileges on database test_db
-$client->admin->grant(\InfluxDB\Client\Admin::PRIVILEGE_READ, 'testuser123', 'test_db');
+client.admin.grant(InfluxDB.UserPrivilege.READ, "testuser123", 'test_db');
 
 // revoke user testuser123's read privileges on database test_db
-$client->admin->revoke(\InfluxDB\Client\Admin::PRIVILEGE_READ, 'testuser123', 'test_db');
+client.admin.revoke(InfluxDB.UserPrivilege.READ, "testuser123", 'test_db');
 
 // grant a user cluster-wide privileges
-$client->admin->grant(\InfluxDB\Client\Admin::PRIVILEGE_READ, 'testuser123');
+client.admin.grant(InfluxDB.UserPrivilege.READ, "testuser123");
 
 // Revoke an admin's cluster-wide privileges
-$client->admin->revoke(\InfluxDB\Client\Admin::PRIVILEGE_ALL, 'admin_user');
+client.admin.revoke(InfluxDB.UserPrivilege.ALL, "admin_user");
 ```
-
-## Todo
-
-* More unit tests
-* Improve documentation
 
 
 ## Changelog
