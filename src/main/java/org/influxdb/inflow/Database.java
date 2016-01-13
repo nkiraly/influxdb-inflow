@@ -2,6 +2,7 @@ package org.influxdb.inflow;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -116,14 +117,19 @@ public class Database {
    */
   public void writePoints(Point[] points, TimeUnit precision) throws InflowException {
 
-    String payload = "";
+    List<String> lines = new ArrayList<>();
     for (Point point : points) {
-      payload += point.lineProtocol();
+      lines.add(point.lineProtocol());
     }
 
     // TODO: get retention polcy and consistency levels passed
     // or refactor a write() that does not require them and use them as defined in the driver?
-    this.client.driver.write(this.name, new RetentionPolicy("default"), InfluxDB.ConsistencyLevel.ONE, TimeUtil.toTimePrecision(precision));
+    this.client.driver.write(
+            this.name,
+            new RetentionPolicy("default"),
+            InfluxDB.ConsistencyLevel.ONE,
+            lines
+    );
   }
 
   public void writePoints(Point[] points) throws InflowException {
