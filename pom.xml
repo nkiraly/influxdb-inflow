@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.koadweb.inflow</groupId>
   <artifactId>inflow</artifactId>
-  <version>0.1.3</version>
+  <version>0.2.0</version>
   <packaging>jar</packaging>
   <name>Inflow InfluxDB Client</name>
   <description>Inflow is a library for using InfluxDB with Java, created in the spirit of the Python influxdb client, in an effort to maintain a common structure between various programming languages talking to InfluxDB.</description>

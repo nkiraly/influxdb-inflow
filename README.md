@@ -14,7 +14,7 @@ Until I sort that out, /mvn install/ this project locally and then you can use i
     <dependency>
       <groupId>com.koadweb.inflow</groupId>
       <artifactId>inflow</artifactId>
-      <version>0.1.3</version>
+      <version>0.2.0</version>
     </dependency>
 ```
 
@@ -286,6 +286,9 @@ client.admin.revoke(InfluxDB.UserPrivilege.ALL, "admin_user");
 
 
 ## Changelog
+
+### 0.2.0
+*
 
 ### 0.1.3
 * Update packaging to com.koadweb.inflow
