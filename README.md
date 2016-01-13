@@ -12,9 +12,9 @@ TODO: Where to publish this library for general consumption?
 Until I sort that out, /mvn install/ this project locally and then you can use it in your maven projects like so:
 ```
     <dependency>
-      <groupId>org.influxdb</groupId>
-      <artifactId>influxdb-inflow</artifactId>
-      <version>0.1.2</version>
+      <groupId>com.koadweb.inflow</groupId>
+      <artifactId>inflow</artifactId>
+      <version>0.1.3</version>
     </dependency>
 ```
 
@@ -286,6 +286,9 @@ client.admin.revoke(InfluxDB.UserPrivilege.ALL, "admin_user");
 
 
 ## Changelog
+
+### 0.1.3
+* Update packaging to com.koadweb.inflow
 
 ### 0.1.2
 * More SLF4J logger emissions, code cleanup, docs updates

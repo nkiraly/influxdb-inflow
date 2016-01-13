@@ -1,4 +1,4 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
 import org.influxdb.InfluxDB.UserPrivilege;
 import org.influxdb.dto.QueryResult;

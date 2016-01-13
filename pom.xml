@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.influxdb</groupId>
-  <artifactId>influxdb-inflow</artifactId>
+  <groupId>com.koadweb.inflow</groupId>
+  <artifactId>inflow</artifactId>
+  <version>0.1.3</version>
   <packaging>jar</packaging>
-  <version>0.1.2</version>
   <name>Inflow InfluxDB Client</name>
   <description>Inflow is a library for using InfluxDB with Java, created in the spirit of the Python influxdb client, in an effort to maintain a common structure between various programming languages talking to InfluxDB.</description>
   <url>http://github.com/nkiraly/influxdb-inflow</url>

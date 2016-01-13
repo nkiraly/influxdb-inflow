@@ -1,4 +1,4 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
 public class InflowDatabaseException extends Exception {
 

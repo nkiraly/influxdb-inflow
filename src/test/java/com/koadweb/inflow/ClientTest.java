@@ -1,4 +1,4 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
 import com.google.gson.Gson;
 import java.lang.reflect.Method;

@@ -1,5 +1,7 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,15 +10,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.influxdb.dto.BatchPoints;
-import org.influxdb.dto.Point;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.influxdb.InfluxDB.RetentionPolicy;
+import org.influxdb.dto.BatchPoints;
+import org.influxdb.dto.Point;
 
 /**
  * Collects single point writes and aggregates them to BatchPoints for better write performance.

@@ -1,4 +1,4 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDB.RetentionPolicy;
-import org.influxdb.TimeUtil;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Result;

@@ -1,10 +1,10 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
-import org.influxdb.InfluxDBHTTPErrorHandler;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
+import com.koadweb.inflow.BatchProcessor.BatchEntry;
 import com.squareup.okhttp.OkHttpClient;
 import java.util.List;
 import java.util.Map;
@@ -13,20 +13,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import org.influxdb.InfluxDB.ConsistencyLevel;
 import org.influxdb.InfluxDB.RetentionPolicy;
+import org.influxdb.InfluxDBHTTPErrorHandler;
+import org.influxdb.InfluxDBHTTPInterface;
 import org.influxdb.TimeUtil;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Pong;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
+import retrofit.RestAdapter;
 import retrofit.client.Client;
+import retrofit.client.Header;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
-import retrofit.RestAdapter;
-import retrofit.client.Header;
 import retrofit.mime.TypedString;
-import org.influxdb.InfluxDBHTTPInterface;
-import org.influxdb.inflow.BatchProcessor.BatchEntry;
 
 public class DriverHTTP implements DriverInterface, QueryDriverInterface {
 

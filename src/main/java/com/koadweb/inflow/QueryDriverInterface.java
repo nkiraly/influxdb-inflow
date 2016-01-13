@@ -1,4 +1,4 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
 import java.util.concurrent.TimeUnit;
 import org.influxdb.dto.Query;

@@ -1,4 +1,4 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

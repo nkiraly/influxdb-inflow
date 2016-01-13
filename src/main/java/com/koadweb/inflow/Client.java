@@ -1,14 +1,12 @@
-package org.influxdb.inflow;
+package com.koadweb.inflow;
 
 import com.squareup.okhttp.OkHttpClient;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.influxdb.InfluxDB;
-import retrofit.client.OkClient;
 import org.influxdb.InfluxDBHTTPInterface;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -16,6 +14,7 @@ import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import retrofit.client.OkClient;
 
 public class Client {
 
