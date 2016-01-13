@@ -14,7 +14,7 @@ Until I sort that out, /mvn install/ this project locally and then you can use i
     <dependency>
       <groupId>org.influxdb</groupId>
       <artifactId>influxdb-inflow</artifactId>
-      <version>0.1.1-SNAPSHOT</version>
+      <version>0.1.2</version>
     </dependency>
 ```
 
@@ -284,6 +284,9 @@ client.admin.revoke(InfluxDB.UserPrivilege.ALL, "admin_user");
 
 
 ## Changelog
+
+### 0.1.2
+* More SLF4J logger emissions, code cleanup, docs updates
 
 ### 0.1.1
 * Implementation refinement

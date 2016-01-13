@@ -5,7 +5,7 @@
   <groupId>org.influxdb</groupId>
   <artifactId>influxdb-inflow</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.2</version>
   <name>Inflow InfluxDB Client</name>
   <description>Inflow is a library for using InfluxDB with Java, created in the spirit of the Python influxdb client, in an effort to maintain a common structure between various programming languages talking to InfluxDB.</description>
   <url>http://github.com/nkiraly/influxdb-inflow</url>
