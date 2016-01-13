@@ -1,17 +1,14 @@
 package org.influxdb.dto;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.google.common.collect.Maps;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import org.testng.annotations.Test;
-
-import com.google.common.collect.Maps;
 
 /**
  * Test for the Point DTO.

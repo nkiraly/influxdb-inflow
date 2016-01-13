@@ -11,7 +11,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

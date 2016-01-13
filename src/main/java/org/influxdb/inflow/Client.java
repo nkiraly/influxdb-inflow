@@ -14,8 +14,12 @@ import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Client {
+
+  private final static Logger logger = LoggerFactory.getLogger(Client.class);
 
   public Admin admin;
 
@@ -92,6 +96,7 @@ public class Client {
    * @return
    */
   public Database selectDB(String name) throws InflowException {
+    logger.debug("Client.selectDB() " + name);
     return new Database(name, this);
   }
  
@@ -115,7 +120,7 @@ public class Client {
     if (this.driver instanceof QueryDriverInterface) {
       // driver class supports query
     } else {
-      throw new InflowException("Currently configured driver does not support query operations");
+      throw new InflowException("Current driver " + this.driver.getClass().getCanonicalName() + "does not support query operations");
     }
     return (QueryDriverInterface)this.driver;
   }
@@ -169,6 +174,7 @@ public class Client {
    *
    */
   public static Client fromURI(String uri, int timeout, boolean verifySSL) throws InflowException {
+    logger.debug("Client.fromURI() " + uri);
 
     URI u;
     try {

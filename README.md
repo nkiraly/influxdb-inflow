@@ -38,7 +38,7 @@ Client client = Client.fromURI("http://influxdb.local:8086");
 Database database = Database.fromURI("http://influxdb.local:8086/datinflowtho");
 ```
 
-### Reading
+### Reading data
 
 To fetch records from InfluxDB, you can:
     

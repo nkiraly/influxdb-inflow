@@ -2,8 +2,12 @@ package org.influxdb.inflow;
 
 import org.influxdb.InfluxDB.UserPrivilege;
 import org.influxdb.dto.QueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Admin {
+
+  private final Logger logger = LoggerFactory.getLogger(Admin.class);
 
   protected Client client;
 
@@ -76,11 +80,13 @@ public class Admin {
         query += "FROM " + username;
       }
     }
+    
+    logger.debug("Admin.executePrivilege() query = " + query);
 
     return this.client.query(null, query);
   }
 
-  protected QueryResult executePrivilege(String type, UserPrivilege privilege, String username) {
-    return this.executePrivilege(type, privilege, username);
+  protected QueryResult executePrivilege(String type, UserPrivilege privilege, String username) throws InflowException {
+    return this.executePrivilege(type, privilege, username, null);
   }
 }

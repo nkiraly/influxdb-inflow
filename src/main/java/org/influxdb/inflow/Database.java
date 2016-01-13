@@ -13,8 +13,12 @@ import org.influxdb.dto.Point;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Result;
 import org.influxdb.dto.QueryResult.Series;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Database {
+
+  private final static Logger logger = LoggerFactory.getLogger(Client.class);
 
   protected String name;
   protected Client client;
@@ -40,6 +44,7 @@ public class Database {
    *
    */
   public static Database fromURI(String uri, int timeout, boolean verifySSL) throws InflowException {
+    logger.debug("Database.fromURI() " + uri);
 
     Client client = Client.fromURI(uri, timeout, verifySSL);
 

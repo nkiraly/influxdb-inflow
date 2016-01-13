@@ -11,13 +11,13 @@ import java.util.concurrent.TimeUnit;
  */
 public enum TimeUtil {
   ;
-	/**
-	 * Convert from a TimeUnit to a influxDB timeunit String.
-	 *
-	 * @param t
-	 * @return the String representation.
-	 */
-	public static String toTimePrecision(final TimeUnit t) {
+  /**
+   * Convert from a TimeUnit to a influxDB timeunit String.
+   *
+   * @param t
+   * @return the String representation.
+   */
+  public static String toTimePrecision(final TimeUnit t) {
     switch (t) {
       case HOURS:
         return "h";
