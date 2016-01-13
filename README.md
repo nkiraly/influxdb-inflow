@@ -148,6 +148,8 @@ First, set your InfluxDB host to support incoming UDP sockets:
 [udp]
   enabled = true
   bind-address = ":4444"
+  # if you don't specify database, measurements received will go into a database called udp
+  database = "inflow_test"
 ```
 
 Then, tell the client to use the UDP driver:
