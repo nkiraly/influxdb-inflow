@@ -109,12 +109,6 @@ public class Database {
     return this.create(null);
   }
 
-  /**
-   * Writes points into InfluxDB
-   *
-   * @param points Array of points
-   * @param precision The timestamp precision (defaults to nanoseconds)
-   */
   public void writePoints(Point[] points, TimeUnit precision) throws InflowException {
 
     List<String> lines = new ArrayList<>();
@@ -134,6 +128,21 @@ public class Database {
 
   public void writePoints(Point[] points) throws InflowException {
     this.writePoints(points, TimeUnit.NANOSECONDS);
+  }
+  
+  public void writePoint(Point point, TimeUnit precision) throws InflowException {
+
+    // TODO: get retention polcy and consistency levels passed
+    // or refactor a write() that does not require them and use them as defined in the driver?
+    this.client.driver.write(
+            this.name,
+            new RetentionPolicy("default"),
+            point
+    );
+  }
+  
+  public void writePoint(Point point) throws InflowException {
+    this.writePoint(point, TimeUnit.NANOSECONDS);
   }
 
   public boolean exists() throws InflowException {

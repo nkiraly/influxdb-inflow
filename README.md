@@ -45,11 +45,12 @@ To fetch records from InfluxDB, you can:
 1) Do a manual query directly on a database:
 
 ```java
-Database database = Database.fromURI("http://inflowexample:inflow011@bludgeon:8086/inflow1");
+String influxdbURI = "http://inflowexample:inflow011@influxdb.local:8086/inflow_test";
+Database database = Database.fromURI(influxdbURI);
 
-// executing a query will yield a QueryResult object
-Query query1 = new Query("SELECT * FROM test_metric LIMIT 5", "inflow1");
-QueryResult result1 = database.query(query);
+// executing a raw query string yields a QueryResult object
+String query1 = "SELECT * FROM test_metric LIMIT 5";
+QueryResult result1 = database.query(query1);
 
 // get the point values from the QueryResult as an array with the collapser getValuesAsStringArray
 String[] values = result1.getValuesAsStringArray();
@@ -139,7 +140,7 @@ The name of a measurement and the value are mandatory. Additional fields, tags a
 InfluxDB takes the current time as the default timestamp.
 
 
-#### Writing data using udp
+#### Writing data using UDP
 
 First, set your InfluxDB host to support incoming UDP sockets:
 
@@ -147,41 +148,32 @@ First, set your InfluxDB host to support incoming UDP sockets:
 [udp]
   enabled = true
   bind-address = ":4444"
-  database = "test_db"  
 ```
 
-Then, configure the UDP driver in the client:
+Then, tell the client to use the UDP driver:
 
-```php
-// set the UDP driver in the client
-$client->setDriver(new \InfluxDB\Driver\UDP($client->getHost(), 4444));
+```java
+String influxdbURI = "http://inflowexample:inflow011@influxdb.local:8086";
+
+Client client = Client.fromURI(influxdbURI);
+
+DriverInterface driver = new DriverUDP(client.getHost(), 4444);
+client.setDriver(driver);
     
-$points = [
-  new Point(
-    'test_metric',
-    0.84,
-    ['host' => 'server01', 'region' => 'us-west'],
-    ['cpucount' => 10],
-    exec('date +%s%N') // this will produce a nanosecond timestamp on Linux ONLY
-  )
-];
-    
-// now just write your points like you normally would
-$result = $database->writePoints($points);
+// create a point to be recorded as "now"
+Point point5 = Point
+        .measurement("test_metric")
+        .field("value", 0.85)
+        .tag("host", "server01")
+        .tag("region", "us-west")
+        .tag("proto", "udp")
+        .field("cpucount", 10)
+        .build();
+
+// write the point
+Point[] points = new Point[]{point5};
+database.writePoints(points);
 ```
-
-Or simply use a DSN (Data Source Name) to send metrics using UDP:
-
-```php
-// get a database object using a DSN (Data Source Name) 
-$database = \InfluxDB\Client::fromDSN('udp+influxdb://username:pass@localhost:4444/test123');
-    
-// write your points
-$result = $database->writePoints($points);    
-```
-
-*Note:* It is import to note that precision will be *ignored* when you use UDP. You should always use nanosecond
-precision when writing data to InfluxDB using UDP.
 
 #### Timestamp precision
 
