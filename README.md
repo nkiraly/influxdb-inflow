@@ -18,6 +18,8 @@ Until I sort that out, /mvn install/ this project locally and then you can use i
     </dependency>
 ```
 
+For an example of using the artifact and java code that will talk to InfluxDB, check out the Inflow examples project: https://github.com/nkiraly/influxdb-inflow-examples
+
 ### Getting started
 
 Initialize a new client object:
