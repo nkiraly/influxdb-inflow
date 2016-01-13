@@ -95,6 +95,31 @@ public class QueryResult {
     hash = 79 * hash + Objects.hashCode(this.error);
     return hash;
   }
+  
+  public String[] getValuesAsStringArray(String metricName) {
+    List<String> values = new ArrayList<>();
+
+    if (this.getResults() != null) {
+      for (Result result : this.getResults()) {
+        if (result.getSeries() != null) {
+          for (Series series : result.getSeries()) {
+            // if metricName was not specified, or this Series name matches, add it to the points array
+            if (metricName == null || series.getName().equals(metricName)) {
+              for (String value : series.getValuesAsStringArray()) {
+                values.add(value);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return values.toArray(new String[0]);
+  }
+
+  public String[] getValuesAsStringArray() {
+    return this.getValuesAsStringArray(null);
+  }
 
   public static class Result {
 

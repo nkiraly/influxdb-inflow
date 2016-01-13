@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
 /**
@@ -222,10 +223,15 @@ public class QueryBuilder {
 
     return this;
   }
-
-  public String getQuery() {
-
+  
+  public String getQueryCommand() {
     return this.parseQuery();
+  }
+
+  public Query build() {
+
+    Query query = new Query(this.parseQuery(), this.db.getName());
+    return query;
   }
 
   /**

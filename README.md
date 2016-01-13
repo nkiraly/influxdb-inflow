@@ -5,7 +5,7 @@
 
 ### Overview
 
-Inflow is a library for using InfluxDB with Java projects that need to talk HTTP or UDP. It takes code and architecture from both https://github.com/influxdata/influxdb-php and https://github.com/influxdata/influxdb-java projects. The goals were Java code query builders and results DTO, multiple connection management, and UDP transport support.
+Inflow is a library for using InfluxDB with Java projects that need to talk HTTP or UDP. It takes code and architecture from both https://github.com/influxdata/influxdb-php and https://github.com/influxdata/influxdb-java projects. The goals are Java code query builders and results DTO, multiple connection management, and UDP transport support.
 
 ### Maven
 TODO: Where to publish this library for general consumption?
@@ -40,48 +40,46 @@ Database database = Database.fromURI("http://influxdb.local:8086/datinflowtho");
 
 ### Reading
 
-To fetch records from InfluxDB you can do a query directly on a database:
+To fetch records from InfluxDB, you can:
+    
+1) Do a manual query directly on a database:
 
-```php
-// fetch the database
-$database = $client->selectDB('influx_test_db');
+```java
+Database database = Database.fromURI("http://inflowexample:inflow011@bludgeon:8086/inflow1");
 
 // executing a query will yield a QueryResult object
-$result = $database->query('select * from test_metric LIMIT 5');
+Query query1 = new Query("SELECT * FROM test_metric LIMIT 5", "inflow1");
+QueryResult result1 = database.query(query);
 
-// get the points from the QueryResult yields an array
-$points = $result->getPoints();
+// get the point values from the QueryResult as an array with the collapser getValuesAsStringArray
+String[] values = result1.getValuesAsStringArray();
 ```
 
-It's also possible to use the QueryBuilder object. This is a class that simplifies the process of building queries.
+2) Query for data using the QueryBuilder object
 
-```php
-// retrieve points with the query builder
-$result = $database->getQueryBuilder()
-  ->select('cpucount')
-  ->from('test_metric')
-  ->limit(2)
-  ->getResultSet()
-  ->getPoints();
+```java
+// retrieve points array with the query builder
+String[] points2 = database.getQueryBuilder()
+  .select("cpucount")
+  .from("test_metric")
+  .limit(2)
+  .getQueryResult()
+  .getValuesAsStringArray();
   
-// get the query from the QueryBuilder
-$query = $database->getQueryBuilder()
-  ->select('cpucount')
-  ->from('test_metric')
-  ->where(["region = 'us-west'"])
-  ->getQuery();
+// get the query command from the QueryBuilder
+String query3 = database.getQueryBuilder()
+  .select("cpucount")
+  .from("test_metric")
+  .where("region = 'us-west'")
+  .getQueryCommand();
 ```
+Make sure that you enter single quotes when doing a where query on strings.
+Otherwise InfluxDB will return an empty result.
 
-Make sure that you enter single quotes when doing a where query on strings; otherwise InfluxDB will return an empty result.
+You can get the last executed query from the client static method getLastQuery()
 
-You can get the last executed query from the client:
-
-```php
-// use the getLastQuery() method
-$lastQuery = $client->getLastQuery();
-
-// or access the static variable directly:
-$lastQuery = Client::lastQuery;
+```java
+String lastQuery1 = client.getLastQuery();
 ```
 
 ### Writing data
@@ -100,7 +98,7 @@ Writing data is done by providing an array of points to the writePoints method o
             .tag("host", "server01")
             .tag("region", "us-west")
             .field("cpucount", 10)
-            .time(1435222310, TimeUnit.SECONDS) // 2015-06-25 08:51:50 GMT
+            .time(1452129125, TimeUnit.SECONDS) // 2016-01-07 01:12:05 GMT
             .build();
     // Note: It's possible to add multiple fields (see https://influxdb.com/docs/v0.9/concepts/key_concepts.html) when writing measurements to InfluxDB.
 
@@ -108,8 +106,28 @@ Writing data is done by providing an array of points to the writePoints method o
             .measurement("cpu_load_short")
             .field("value", 0.84)
             .build();
+    // Note: No .time() - InfluxDB uses the current time as the default timestamp.
+    
+    // data points of test_metric measurement, which include optional tags and fields
+    Point point3 = Point
+            .measurement("test_metric")         // name of the measurement
+            .field("value", 0.64)               // the measurement value
+            .tag("host", "server01")            // optional tags
+            .tag("region", "us-west")
+            .field("cpucount", 10)              // optional additional fields
+            .time(1452659705, TimeUnit.SECONDS) // 2016-01-13 04:34:05 GMT
+            .build();
+    
+    Point point4 = Point
+            .measurement("test_metric")         // name of the measurement
+            .field("value", 0.84)               // the measurement value
+            .tag("host", "server01")            // optional tags
+            .tag("region", "us-west")
+            .field("cpucount", 10)              // optional additional fields
+            .time(1452659709, TimeUnit.SECONDS) // 2016-01-13 04:34:09 GMT
+            .build();
 
-    Point[] points = new Point[] { point1, point2 };
+    Point[] points = new Point[]{point1, point2, point3, point4};
 
     database.writePoints(points);
 ```
