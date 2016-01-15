@@ -100,7 +100,7 @@ public class Database {
         this.createRetentionPolicy(retentionPolicy);
       }
     } catch (Exception ex) {
-      throw new InflowDatabaseException("Failed to created database %s" + this.name + "\n" + ex.getMessage(), ex);
+      throw new InflowDatabaseException("Failed to create database " + this.name + ": " + ex.getMessage(), ex);
     }
     return queryResult;
   }

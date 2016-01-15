@@ -119,7 +119,7 @@ public class Client {
     if (this.driver instanceof QueryDriverInterface) {
       // driver class supports query
     } else {
-      throw new InflowException("Current driver " + this.driver.getClass().getCanonicalName() + "does not support query operations");
+      throw new InflowException("Current driver " + this.driver.getClass().getCanonicalName() + " does not support query operations");
     }
     return (QueryDriverInterface)this.driver;
   }
